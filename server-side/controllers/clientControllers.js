@@ -56,9 +56,9 @@ module.exports.leaderboard = async (req, res, next) => {
             return res.status(401).json({ status: false, msg: "Session expired or invalid" });
         }
 
-        const cfID = await Users.find().select(["cfID"]);
+        const cfID = await Users.find({ emailVerified: true, cfVerified: true }).select(["cfID"]);
         return res.json({ status: true, data: cfID });
-    }
+            }
     catch (error) {
         next(error);
     }
