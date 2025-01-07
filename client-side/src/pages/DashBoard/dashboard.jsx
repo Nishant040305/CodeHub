@@ -38,8 +38,18 @@ export default function UserHome() {
     if (id) {
         cfID = id;
     }
-    console.log(cfID);
-
+    const redirect = async (cfID) => {
+        try{
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/check/user/${cfID}`,{withCredentials: true});
+            if(response.data.status === false){
+                navigate("/");
+            }
+        }catch(error){
+            console.log(error);
+            navigate("/");
+        }
+        
+    }
     let userData = { status: "", data: {} };
     let userRating = { status: "", data: {} };
     let userSubmissions = { status: "", data: {} };
@@ -100,6 +110,7 @@ export default function UserHome() {
         // API calls and Initialisation of Data Members
         try {
             console.log(cfID);
+            
             const userDataAPI = await axios.get("https://codeforces.com/api/user.info?handles=" + cfID);
             const userRatingAPI = await axios.get("https://codeforces.com/api/user.rating?handle=" + cfID);
             const userSubmissionsAPI = await axios.get("https://codeforces.com/api/user.status?handle=" + cfID);
@@ -244,6 +255,7 @@ export default function UserHome() {
     }
 
     useEffect(() => {
+        redirect(cfID);
         fetchData();
     }, [cfID]);
 

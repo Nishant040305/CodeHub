@@ -4,7 +4,7 @@ const {
     leaderboard,
     contactUs,
     noticeboard,
-    register
+    register,
 } = require("../controllers/clientControllers");
 
 const controller = require("../controllers/Client/controller");
@@ -31,19 +31,23 @@ router.post("/requestCfVerification", controller.generateCfVerificationRequestTo
 
 //For Changing Password
 
-// @route POST api/forgetPassword
+// @route POST /forgetPassword
 // @desc Forget Password
 // @access Public
 router.post("/forgetPassword",controller.ForgetPassword.ForgetPassword);
 
-// @route POST api/verifyPasswordChangeOTP
+// @route POST /verifyPasswordChangeOTP
 // @desc Confirm User
 // @access Public
 router.post("/verifyPasswordChangeOTP",verifyPasswordReq, controller.ForgetPassword.VerifyPasswordChangeOTP);
 
-// @route POST api/confirmPasswordChange
+// @route POST /confirmPasswordChange
 // @desc Confirm Password Change
 // @access Public
 router.post("/confirmPasswordChange",verifyPasswordReq,controller.ForgetPassword.ConfirmPasswordChange);
 
+// @route GET /check/user/:id
+// @desc Check if user exists
+// @access Public
+router.get("/check/user/:id",verifyCookie,controller.checkUser);
 module.exports = router;
