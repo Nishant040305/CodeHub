@@ -20,8 +20,8 @@ function LeaderUser(props) {
         <div className="leader-box" onClick={handleUserClick}>
             <div className="leader-info">
                 <img src={avatar} alt={`${name} Avatar`} className="user-avatar" />
-                <span className="leader-rank" style={{ color: rankColor }}>
-                    <b>#{rank}</b> {name}
+                <b className='p-2 text-gray-600'>#{rank}</b><span className="leader-rank" style={{ color: rankColor }}>
+                     {name}
                 </span>
                 
             </div>

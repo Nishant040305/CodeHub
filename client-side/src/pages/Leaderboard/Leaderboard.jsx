@@ -74,7 +74,7 @@ export default function Leaderboard() {
                 return (
                     <LeaderUser
                         key={user.cfID}
-                        // rank={newPosition}
+                        rank={newPosition}
                         name={user.cfID}
                         avatar={user.avatar}
                         title={user.rank}
