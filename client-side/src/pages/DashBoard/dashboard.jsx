@@ -118,7 +118,7 @@ export default function UserHome() {
 
             userData.status = userDataAPI.data.status;
             userData.data = userDataAPI.data.result[0];
-            
+            const userUpdate = await axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/updateCFData`,{username:userData.data.handle,avatar:userData.data.avatar,rating:userData.data.rating,rank:userData.data.rank},{withCredentials: true});
             userRating.status = userRatingAPI.data.status;
             userRating.data = userRatingAPI.data.result;
 

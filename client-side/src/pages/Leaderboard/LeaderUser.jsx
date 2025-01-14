@@ -19,12 +19,6 @@ function LeaderUser(props) {
     return (
         <div className="leader-box" onClick={handleUserClick}>
             <div className="leader-info">
-                <img src={avatar} alt={`${name} Avatar`} className="user-avatar" />
-                <b className='p-2 text-gray-600'>#{rank}</b><span className="leader-rank" style={{ color: rankColor }}>
-                     {name}
-                </span>
-                
-            </div>
             <button className='p-2 bg-transparent border-none' onClick={()=>{handleCodeforcesRedirect()}}>
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -38,6 +32,13 @@ function LeaderUser(props) {
                 <path fill="#FFC107" d="M0 19.5c0 .828.673 1.5 1.5 1.5h3A1.5 1.5 0 0 0 6 19.5V9a1.5 1.5 0 0 0-1.5-1.5h-3C.673 7.5 0 8.172 0 9v10.5z" />
             </svg>
         </button>
+                <img src={avatar} alt={`${name} Avatar`} className="user-avatar" />
+                <b className='p-2 text-gray-600'>#{rank}</b><span className="leader-rank" style={{ color: rankColor }}>
+                     {name}
+                </span>
+                
+            </div>
+            
 
             <div className="leader-rating">
             <div>
@@ -63,18 +64,18 @@ function LeaderUser(props) {
 }
 
 function getRankColor(rank) {
-    switch(rank) {
-        case 'newbie': return 'gray';
-        case 'pupil': return 'green';
-        case 'specialist': return 'cyan';
-        case 'expert': return 'blue';
-        case 'candidate master': return 'purple';
-        case 'master': return 'orange';
-        case 'international master': return 'red';
-        case 'grandmaster': return 'darkred';
-        case 'international grandmaster': return 'darkred';
-        case 'legendary grandmaster': return 'darkred';
-        default: return 'black';
+    switch(rank.toLowerCase()) {
+        case 'newbie': return '#A0A0A0'; // gray
+        case 'pupil': return '#66CDAA'; // medium sea green
+        case 'specialist': return '#40E0D0'; // turquoise (cyan)
+        case 'expert': return '#4682B4'; // steel blue (blue)
+        case 'candidate master': return '#8A2BE2'; // blue violet (purple)
+        case 'master': return '#FF7F50'; // coral (orange)
+        case 'international master': return '#B22222'; // firebrick (red)
+        case 'grandmaster': return '#8B0000'; // dark red
+        case 'international grandmaster': return '#8B0000'; // dark red
+        case 'legendary grandmaster': return '#8B0000'; // dark red
+        default: return '#000000'; // black
     }
 }
 

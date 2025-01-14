@@ -16,87 +16,85 @@ export default function Leaderboard() {
         <Spinner />
     </>);
 
-    // Function to sort users by their ratings (new or usual)
-    const sortUsersByRating = (userBoardInfo, userRatingsKey) => {
-        return [...userBoardInfo].sort((a, b) => {
-            const aRating = a[userRatingsKey] || 0;
-            const bRating = b[userRatingsKey] || 0;
-            return bRating - aRating; // Sort in descending order
-        });
-    };
 
     const updatePageHtml = async () => {
         try {
-            const leaderboardAPIResponse = await axios.post(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/leaderboard`,
-                { cfID: user.cfID },
-                { withCredentials: true }
-            );
-
-            const userBoardInfo = leaderboardAPIResponse.data.data;
 
             // Get the latest contest ID
             const contests = await axios.get('https://codeforces.com/api/contest.list');
             const latestContest = contests.data.result.find((contest) => contest.phase === 'FINISHED');
             const latestContestId = latestContest.id;
-
-            // Get ratings from the latest contest
-            const ratingChanges = await axios.get(`https://codeforces.com/api/contest.ratingChanges?contestId=${latestContestId}`);
-            const participants = ratingChanges.data.result;
-            console.log(participants);
-            // Fetch user info for usual ratings
-            const userRatings = await Promise.all(
-                userBoardInfo.map(async (user) => {
-                    const userInfo = await axios.get(`https://codeforces.com/api/user.info?handles=${user.cfID}`);
-                    const userDetails = userInfo.data.result[0];
-                    console.log(userDetails);
-                    return {
-                        cfID: user.cfID,
-                        avatar:userDetails.avatar,
-                        rank:userDetails.rank,
-                        usualRating: userDetails.rating || 0,
-                        newRating: participants.find((p) => p.handle === user.cfID)?.newRating || 0,
-                    };
-                })
+            const leaderboardAPIResponse = await axios.post(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/leaderboard`,
+                { contestId: latestContestId }
             );
 
-            // Sort users by new ratings and usual ratings
-            userRatings.sort((a, b) => b.usualRating - a.usualRating);
-            const sortedByNewRating = sortUsersByRating(userRatings, 'newRating');
-            const sortedByUsualRating = sortUsersByRating(userRatings, 'usualRating');
+            const userBoardInfo = leaderboardAPIResponse.data.data;
 
-            // Calculate position changes
-            const leaderComponents = sortedByNewRating.map((user, index) => {
-                const oldPosition = sortedByUsualRating.findIndex((u) => u.cfID === user.cfID) + 1;
-                const newPosition = index + 1;
-                const positionChange = oldPosition-newPosition;
-                console.log(user);
+            // // Get ratings from the latest contest
+            // const ratingChanges = await axios.get(`https://codeforces.com/api/contest.ratingChanges?contestId=${latestContestId}`);
+            // const participants = ratingChanges.data.result;
+            // console.log(participants);
+            // // Fetch user info for usual ratings
+            // const userRatings = await Promise.all(
+            //     userBoardInfo.map(async (user) => {
+            //         const userInfo = await axios.get(`https://codeforces.com/api/user.info?handles=${user.cfID}`);
+            //         const userDetails = userInfo.data.result[0];
+            //         console.log(userDetails);
+            //         return {
+            //             cfID: user.cfID,
+            //             avatar:userDetails.avatar,
+            //             rank:userDetails.rank,
+            //             usualRating: userDetails.rating || 0,
+            //             newRating: participants.find((p) => p.handle === user.cfID)?.newRating || 0,
+            //         };
+            //     })
+            // );
+
+            // // Sort users by new ratings and usual ratings
+            // userRatings.sort((a, b) => b.usualRating - a.usualRating);
+            // const sortedByNewRating = sortUsersByRating(userRatings, 'newRating');
+            // const sortedByUsualRating = sortUsersByRating(userRatings, 'usualRating');
+
+            // // Calculate position changes
+            // const leaderComponents = sortedByNewRating.map((user, index) => {
+            //     const oldPosition = sortedByUsualRating.findIndex((u) => u.cfID === user.cfID) + 1;
+            //     const newPosition = index + 1;
+            //     const positionChange = oldPosition-newPosition;
+            //     console.log(user);
+            const leaderComponents = userBoardInfo.map((user,index) => {
                 return (
                     <LeaderUser
-                        key={user.cfID}
-                        rank={newPosition}
-                        name={user.cfID}
+                        key={user.username}
+                        rank={index+1}
+                        name={user.username}
                         avatar={user.avatar}
                         title={user.rank}
-                        cfID={user.cfID}
+                        cfID={user.username}
                         rating={user.newRating}
-                        positionChange={positionChange}
+                        positionChange={user.position}
                     />
                 );
             });
 
             setPageHtml(<>
-                <div>
+                <div className="leaderboard-container">
                     <div className="background-pink-blue">
                         <NavSpace />
-                        <div className="leader-heading mt-5 ml-3">Leaderboard</div>
-                        <p style={{ textAlign: 'center' }}>
-                            Rankings are based on the latest contest results. Ratings of inactive participants are considered 0.
-                        </p>
-                        <div>{leaderComponents}</div>
+                        <div className="leader-heading-container">
+                            <h1 className="leader-heading">Leaderboard</h1>
+                            <p className="leader-description">
+                                Rankings are based on the latest contest results. Ratings of inactive participants are considered 0.
+                            </p>
+                        </div>
+                        
+                        <div className="leaderboard-content">
+                            {leaderComponents}
+                        </div>
                     </div>
                     <Footer />
                 </div>
+
             </>);
         } catch (err) {
             setPageHtml(

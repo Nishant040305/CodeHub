@@ -1,12 +1,12 @@
 const {
     educationCategories,
     videos,
-    leaderboard,
+    // leaderboard,
     contactUs,
     noticeboard,
     register,
 } = require("../controllers/clientControllers");
-
+const leaderboard = require("../controllers/Client/leaderboard.controller");
 const controller = require("../controllers/Client/controller");
 const verifyCookie = require("../middleware/verifyCookie");
 const verifyPasswordReq = require("../middleware/verifyPasswordReq");
@@ -15,7 +15,15 @@ const router = require("express").Router();
 // Routes that require authentication
 router.post("/education", verifyCookie, educationCategories);
 router.post("/education/videos", verifyCookie, videos);
-router.post("/leaderboard", verifyCookie, leaderboard);
+//@route POST /leaderboard
+//@desc Get leaderboard
+//@access Private
+router.post("/leaderboard",leaderboard.getLeaderboard );
+//@route POST /updateCFData
+//@desc Update CF Data
+//@access Private
+router.post("/updateCFData",  leaderboard.updateCFData);
+
 router.post("/feedback", verifyCookie, controller.userFeedback);
 router.post("/logout", verifyCookie, controller.logout);
 router.get("/check/session", verifyCookie, controller.checkSession);
@@ -50,4 +58,5 @@ router.post("/confirmPasswordChange",verifyPasswordReq,controller.ForgetPassword
 // @desc Check if user exists
 // @access Public
 router.get("/check/user/:id",verifyCookie,controller.checkUser);
+
 module.exports = router;
